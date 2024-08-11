@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Device Info</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f5f5f5;
+        }
+        .info-card {
+            padding: 20px;
+            width: 300px;
+        }
+        .header-img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="info-card card">
+        <div class="card-content">
+            <img src="images/pic.jpg" alt="Header Image" class="header-img">
+            <span class="card-title">Device Info</span>
+            <p id="location"></p>
+            <p id="ip"></p>
+            <p id="device"></p>
+        </div>
+        <div class="card-action">
+            <button id="show-info" class="btn waves-effect waves-light">Show Info</button>
+        </div>
+    </div>
+
+    <script>
+        async function getDeviceInfo() {
+            const locationInfo = await fetch('https://ipapi.co/json/').then(response => response.json());
+            const userAgent = navigator.userAgent;
+
+            document.getElementById('location').innerText = `Location: ${locationInfo.city}, ${locationInfo.country_name}`;
+            document.getElementById('ip').innerText = `IP Address: ${locationInfo.ip}`;
+            document.getElementById('device').innerText = `Device: ${userAgent}`;
+
+            return {
+                location: `${locationInfo.city}, ${locationInfo.country_name}`,
+                ip: locationInfo.ip,
+                device: userAgent
+            };
+        }
+
+        document.getElementById('show-info').addEventListener('click', async () => {
+            const info = await getDeviceInfo();
+            const message = `Location: ${info.location}\nIP Address: ${info.ip}\nDevice: ${info.device}`;
+            M.toast({html: message, classes: 'rounded'});
+        });
+
+        // Initialize Materialize toast
+        document.addEventListener('DOMContentLoaded', function() {
+            M.AutoInit();
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+</html>
